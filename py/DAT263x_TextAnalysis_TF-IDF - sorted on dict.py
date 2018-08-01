@@ -30,6 +30,7 @@ doc1Txt = doc1.read()
 txt = ''.join(c for c in doc1Txt if not c.isdigit())
 txt = ''.join(c for c in txt if c not in punctuation).lower()
 txt = ' '.join([word for word in txt.split() if word not in (stopwords.words('english'))])
+doc1.close()
 
 # Get a second document, normalize it, and remove stop words
 urllib.request.urlretrieve('https://raw.githubusercontent.com/MicrosoftLearning/AI-Introduction/master/files/Gettysburg.txt', 'Gettysburg.txt')
@@ -39,7 +40,7 @@ doc2Txt = doc2.read()
 txt2 = ''.join(c for c in doc2Txt if not c.isdigit())
 txt2 = ''.join(c for c in txt2 if c not in punctuation).lower()
 txt2 = ' '.join([word for word in txt2.split() if word not in (stopwords.words('english'))])
-
+doc2.close()
 
 # and a third
 print("------------------------------------------------")
@@ -51,6 +52,7 @@ from string import punctuation
 txt3 = ''.join(c for c in doc3Txt if not c.isdigit())
 txt3 = ''.join(c for c in txt3 if c not in punctuation).lower()
 txt3 = ' '.join([word for word in txt3.split() if word not in (stopwords.words('english'))])
+doc3.close()
 
 def tf(word, doc):
     return doc.words.count(word) / len(doc.words)

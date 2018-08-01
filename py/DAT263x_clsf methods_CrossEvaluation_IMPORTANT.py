@@ -4,7 +4,28 @@ Created on Tue Mar 27 20:00:40 2018
 
 @author: T901
 """
+"""
+We need to understand the dataset that is gonna be trained to choose the suitable learning algorithm.
+For example, the underlying pattern in experiment data measuring the spring constant is explained 
+by the line (linear), then we should use the linear regression method with degree = 1 to train 
+the data. It is also important to note that the randomness, generability, size of the data are very 
+IMPORTANT factor. They decide the goodness of your learning model. E.g. neural network methods need a lot 
+of data to be trained to build parameters of hidden layers.
+That is WHY GOOD DATA MAKES GOOD MODEL.
+
+To evaluate the learning methods systematically, WHAT SHOULD WE DO?
+
+Using REPEATED Random Sampling, evaluate Accuracy Score of different Classification algorithms.
+Furthermore, for each selected Classification algorithm, you can also evaluate Accuracy Score of 
+each version of that Classification algorithm by turning the algorithm parameters.
+
+Like in the course MIT 600.2x, we evaluate the R2 score of the Linear Regression algorithm 
+for different degrees of polynomial (known that the Linear Regression algorithm has only
+one parameter - degree of polynomial). But many of more learning methods have lots of parameters.
+"""
+
 import pandas as pd
+import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.metrics import mean_squared_error, r2_score
 
@@ -49,27 +70,58 @@ from sklearn.metrics import accuracy_score
 print("Accuracy: %.2f" % accuracy_score(bl_donate[' Class'], y_pred))
 """Very low accuracy - trying different classification model"""
 
-print("\nTry Softmax regression")
+#import random
+#random.seed(0)
+
 from sklearn.model_selection import train_test_split
-train, test = train_test_split(bl_donate, test_size=0.3)
-trainX, trainY, testX, testY = train[cols], train[' Class'], test[cols], test[' Class']
-print(len(trainX), len(trainY), len(testX), len(testY))
-
 from sklearn.linear_model import LogisticRegression
-logreg = LogisticRegression(C=1e5, solver='lbfgs', multi_class='multinomial')
-logreg.fit(trainX, trainY)
-predY = logreg.predict(testX)
-
-print('Accuracy: %.2f ' % accuracy_score(testY, predY))
-
-print("\nTry SVC")
 from sklearn.svm import SVC
-clf = SVC(kernel='rbf', degree=3, C=1e5)
-clf.fit(trainX, trainY)
-predY = clf.predict(testX)
+from sklearn.neural_network import MLPClassifier
 
-print('Accuracy: %.2f ' % accuracy_score(testY, predY))
+numSubsets = 10
+accScoreSoftmax, accScoreSVC, accScoreMLP = [], [], []
 
+for i in range(numSubsets):
+    print('\nLoop ' + str(i) + ':')
+    print("  Try Softmax regression")
+    train, test = train_test_split(bl_donate, test_size=0.3)
+    trainX, trainY, testX, testY = train[cols], train[' Class'], test[cols], test[' Class']
+    #print(len(trainX), len(trainY), len(testX), len(testY))
+    
+    logreg = LogisticRegression(C=1e5, solver='lbfgs', multi_class='multinomial')
+    logreg.fit(trainX, trainY)
+    predY = logreg.predict(testX)
+    
+    accScoreSoftmax.append(accuracy_score(testY, predY))
+    
+    print("  Try SVC")
+    clf = SVC(kernel='rbf', degree=3, C=1e5)
+    clf.fit(trainX, trainY)
+    predY = clf.predict(testX)
+    
+    accScoreSVC.append(accuracy_score(testY, predY))
+    
+    print("  Try Multi Layer Perceptron")
+    clf = MLPClassifier(solver='lbfgs', alpha = 1e-5,\
+                        hidden_layer_sizes = (100,), random_state = 1)
+    clf.fit(trainX, trainY)
+    predY = clf.predict(testX)
+    
+    accScoreMLP.append(accuracy_score(testY, predY))
+    
+accScore = [accScoreSoftmax, accScoreSVC, accScoreMLP]
+print()
+for i, score in enumerate(accScore):
+    mean = sum(score)/len(score)
+    std = np.std(score)
+    if i == 0:
+        print('For softmax, accuracy mean = ' + str(round(mean, 5)) + ', std = ' + str(round(std, 5)))
+    elif i == 1:
+        print('For SVC, accuracy mean = ' + str(round(mean, 5)) + ', std = ' + str(round(std, 5)))
+    else:
+        print('For MPL, accuracy mean = ' + str(round(mean, 5)) + ', std = ' + str(round(std, 5)))
+print()
+    
 # For two dimensions (datasets with two columns)
 def kmeans_display_2D(X, label):
     K = np.amax(label) + 1

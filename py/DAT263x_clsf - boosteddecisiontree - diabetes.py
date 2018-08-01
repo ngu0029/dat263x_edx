@@ -19,8 +19,10 @@ np.random.seed(1234)                              # for fixing random values
 
 # Fix: UnicodeDecodeError: 'utf-8' codec can't decode byte 0xe1 in position 11: invalid continuation byte
 # See https://stackoverflow.com/questions/19699367/unicodedecodeerror-utf-8-codec-cant-decode-byte
-diabetes = pd.read_csv("D:\\data_science\\python_ws\\IntroAI_DAT263x_edX\\DAT263x\\Lab01\\diabetes.csv", encoding="ISO-8859-1")
-doctors = pd.read_csv("D:\\data_science\\python_ws\\IntroAI_DAT263x_edX\\DAT263x\\Lab01\\doctors.csv", encoding="ISO-8859-1")
+#diabetes = pd.read_csv("D:\\data_science\\python_ws\\IntroAI_DAT263x_edX\\DAT263x\\Lab01\\diabetes.csv", encoding="ISO-8859-1")
+#doctors = pd.read_csv("D:\\data_science\\python_ws\\IntroAI_DAT263x_edX\\DAT263x\\Lab01\\doctors.csv", encoding="ISO-8859-1")
+diabetes = pd.read_csv("./DAT263x/Lab01/diabetes.csv", encoding="ISO-8859-1")
+doctors = pd.read_csv("./DAT263x/Lab01/doctors.csv", encoding="ISO-8859-1")
 
 text1 = """ 1. Join two datasets """
 print(text1)
